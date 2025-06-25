@@ -2,74 +2,55 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kirim Username dan Note</title>
+  <title>Form Kirim Username & Note</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #fff;
+      background: #111;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 50px;
+      padding: 2rem;
     }
-    input, textarea, button {
-      margin: 10px;
+    form {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+    }
+    input, textarea {
+      width: 100%;
+      margin: 10px 0;
       padding: 10px;
-      width: 300px;
-      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
     }
-    #qris {
-      margin-top: 20px;
-      display: none;
+    button {
+      background: #4CAF50;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-    #success-message {
-      margin-top: 20px;
-      color: lightgreen;
+    button:hover {
+      background: #45a049;
     }
   </style>
 </head>
 <body>
-  <h2>Kirim Username & Note ke Email</h2>
-  <form id="form">
-    <input type="text" name="username" placeholder="Masukkan Username" required />
-    <textarea name="note" rows="4" placeholder="Masukkan Catatan" required></textarea>
+
+  <h2>Kirim Username dan Note</h2>
+  <form action="https://formsubmit.co/dena166013@gmail.com" method="POST">
+    <!-- Ganti EMAIL_KAMU dengan emailmu -->
+    <input type="hidden" name="_captcha" value="false">
+    <input type="text" name="Username" placeholder="Username kamu" required>
+    <textarea name="Note" rows="4" placeholder="Note kamu" required></textarea>
     <button type="submit">Kirim</button>
   </form>
 
-  <div id="success-message"></div>
-  <img id="qris" src="https://raw.githubusercontent.com/dena-skid/dena/refs/heads/main/QRIS.png" alt="QRIS Pembayaran" width="300" />
-
-  <script>
-    document.getElementById('form').addEventListener('submit', function (e) {
-      e.preventDefault(); // Cegah form reload
-
-      const form = e.target;
-      const formData = new FormData(form);
-
-      fetch('https://formsubmit.co/ajax/denaholdersuperior@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json'
-        },
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success === 'true') {
-          document.getElementById('form').style.display = 'none';
-          document.getElementById('qris').style.display = 'block';
-          document.getElementById('success-message').textContent = 'Berhasil terkirim! Silakan scan QRIS di bawah ini:';
-        } else {
-          document.getElementById('success-message').textContent = 'Gagal mengirim. Coba lagi.';
-        }
-      })
-      .catch(error => {
-        document.getElementById('success-message').textContent = 'Terjadi kesalahan. Coba lagi.';
-        console.error(error);
-      });
-    });
-  </script>
 </body>
 </html>
