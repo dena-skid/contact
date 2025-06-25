@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Form Kirim Data</title>
+  <title>Kirim Data dengan Avatar Roblox</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -26,6 +26,12 @@
       padding: 10px;
       border-radius: 5px;
       border: none;
+    }
+    #avatar {
+      margin-top: 10px;
+      display: none;
+      border-radius: 50%;
+      border: 2px solid #4CAF50;
     }
     button {
       background: #4CAF50;
@@ -52,7 +58,8 @@
 
   <h2>Kirim Username dan Note</h2>
   <form id="myForm">
-    <input type="text" name="Username" placeholder="Username kamu" required>
+    <input type="text" id="username" name="Username" placeholder="Username Roblox kamu" required>
+    <img id="avatar" src="" alt="Avatar Roblox" width="150" height="150">
     <textarea name="Note" rows="4" placeholder="Note kamu" required></textarea>
     <button type="submit">Kirim</button>
   </form>
@@ -60,9 +67,40 @@
   <div id="thanksMessage">Terima kasih! Data kamu sudah terkirim.</div>
 
   <script>
-    document.getElementById("myForm").addEventListener("submit", function(e) {
-      e.preventDefault(); // Stop form from refreshing page
+    const usernameInput = document.getElementById("username");
+    const avatarImg = document.getElementById("avatar");
 
+    // Tampilkan avatar saat selesai mengetik username
+    usernameInput.addEventListener("blur", async () => {
+      const username = usernameInput.value.trim();
+      if (!username) return;
+
+      try {
+        // Ambil userId dari username
+        const res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usernames: [username], excludeBannedUsers: false })
+        });
+
+        const data = await res.json();
+        const userId = data.data[0]?.id;
+
+        if (userId) {
+          avatarImg.src = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`;
+          avatarImg.style.display = "block";
+        } else {
+          avatarImg.style.display = "none";
+        }
+      } catch (error) {
+        console.error("Gagal ambil avatar", error);
+        avatarImg.style.display = "none";
+      }
+    });
+
+    // Kirim data ke FormSubmit
+    document.getElementById("myForm").addEventListener("submit", function(e) {
+      e.preventDefault();
       const form = e.target;
       const data = new FormData(form);
 
@@ -71,7 +109,8 @@
         body: data
       }).then(response => {
         if (response.ok) {
-          form.reset(); // Clear form
+          form.reset();
+          avatarImg.style.display = "none";
           document.getElementById("thanksMessage").style.display = "block";
         } else {
           alert("Gagal mengirim data.");
