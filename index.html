@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Form Kirim Username & Note</title>
+  <title>Form Kirim Data</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -39,18 +39,46 @@
     button:hover {
       background: #45a049;
     }
+    #thanksMessage {
+      display: none;
+      margin-top: 20px;
+      background: #333;
+      padding: 15px;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
 
   <h2>Kirim Username dan Note</h2>
-  <form action="https://formsubmit.co/dena166013@gmail.com" method="POST">
-    <!-- Ganti EMAIL_KAMU dengan emailmu -->
-    <input type="hidden" name="_captcha" value="false">
+  <form id="myForm">
     <input type="text" name="Username" placeholder="Username kamu" required>
     <textarea name="Note" rows="4" placeholder="Note kamu" required></textarea>
     <button type="submit">Kirim</button>
   </form>
+
+  <div id="thanksMessage">Terima kasih! Data kamu sudah terkirim.</div>
+
+  <script>
+    document.getElementById("myForm").addEventListener("submit", function(e) {
+      e.preventDefault(); // Stop form from refreshing page
+
+      const form = e.target;
+      const data = new FormData(form);
+
+      fetch("https://formsubmit.co/dena166013@gmail.com", {
+        method: "POST",
+        body: data
+      }).then(response => {
+        if (response.ok) {
+          form.reset(); // Clear form
+          document.getElementById("thanksMessage").style.display = "block";
+        } else {
+          alert("Gagal mengirim data.");
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
